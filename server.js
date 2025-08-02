@@ -13,6 +13,7 @@ import adminExercisesRoute from './routes/admin/AdminExercises.js';
 
 // Middleware
 import { adminOnly } from './middleware/admin.js';
+import { authenticateToken } from './middleware/auth.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -77,8 +78,11 @@ app.use('/api/progress', progressRoutes);
 // ===========================
 // 🔥 Admin Routes (Protected)
 // ===========================
-app.use('/api/admin', adminOnly, adminUsersRoute);
-app.use('/api/admin', adminOnly, adminExercisesRoute);
+// app.use('/api/admin', adminOnly, adminUsersRoute);
+// app.use('/api/admin', adminOnly, adminExercisesRoute);
+// 🔐 Apply authenticateToken FIRST, then adminOnly
+app.use('/api/admin', authenticateToken, adminOnly, adminUsersRoute);
+app.use('/api/admin', authenticateToken, adminOnly, adminExercisesRoute);
 
 console.log('🔐 Admin routes protected with adminOnly middleware');
 // ===========================
