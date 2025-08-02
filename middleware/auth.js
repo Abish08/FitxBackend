@@ -1,10 +1,10 @@
 // middleware/auth.js
-import jwt from 'jsonwebtoken';           // ✅ Required for jwt.verify
-import { User } from '../config/database.js';  // ✅ Required for User.findByPk
+import jwt from 'jsonwebtoken';           
+import { User } from '../config/database.js';  
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
+  const token = authHeader && authHeader.split(' ')[1]; 
 
   if (!token) {
     return res.status(401).json({

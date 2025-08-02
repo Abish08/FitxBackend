@@ -1,4 +1,3 @@
-// routes/users.js - Converted to ESM
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
@@ -7,7 +6,6 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// Middleware to verify JWT token
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -31,7 +29,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Middleware to check admin role
 const requireAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({
@@ -42,7 +39,6 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// Get user profile
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id, {
@@ -70,7 +66,6 @@ router.get('/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// Update user profile
 router.put('/profile', authenticateToken, [
   body('firstName')
     .optional()
@@ -88,7 +83,6 @@ router.put('/profile', authenticateToken, [
     .withMessage('Username must contain only letters and numbers'),
 ], async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -109,7 +103,6 @@ router.put('/profile', authenticateToken, [
       });
     }
 
-    // Check if username is already taken (if provided)
     if (username && username !== user.username) {
       const existingUser = await User.findOne({ where: { username } });
       if (existingUser) {
@@ -120,14 +113,12 @@ router.put('/profile', authenticateToken, [
       }
     }
 
-    // Update user
     const updatedUser = await user.update({
       firstName: firstName || user.firstName,
       lastName: lastName || user.lastName,
       username: username || user.username
     });
 
-    // Remove password from response
     const userResponse = {
       id: updatedUser.id,
       username: updatedUser.username,
@@ -155,7 +146,6 @@ router.put('/profile', authenticateToken, [
   }
 });
 
-// Change password
 router.put('/change-password', authenticateToken, [
   body('currentPassword')
     .notEmpty()
@@ -165,7 +155,6 @@ router.put('/change-password', authenticateToken, [
     .withMessage('New password must be at least 6 characters long'),
 ], async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -186,7 +175,6 @@ router.put('/change-password', authenticateToken, [
       });
     }
 
-    // Verify current password
     const isValidPassword = await bcrypt.compare(currentPassword, user.password);
     if (!isValidPassword) {
       return res.status(400).json({
@@ -195,11 +183,9 @@ router.put('/change-password', authenticateToken, [
       });
     }
 
-    // Hash new password
     const saltRounds = 12;
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    // Update password
     await user.update({ password: hashedNewPassword });
 
     res.json({
@@ -216,7 +202,6 @@ router.put('/change-password', authenticateToken, [
   }
 });
 
-// Admin only: Get all users
 router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const users = await User.findAll({
@@ -239,7 +224,6 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// Admin only: Get user by ID
 router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
@@ -267,14 +251,12 @@ router.get('/:id', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// Admin only: Update user role
 router.put('/:id/role', authenticateToken, requireAdmin, [
   body('role')
     .isIn(['user', 'admin'])
     .withMessage('Role must be either user or admin')
 ], async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -295,10 +277,8 @@ router.put('/:id/role', authenticateToken, requireAdmin, [
       });
     }
 
-    // Update user role
     const updatedUser = await user.update({ role });
 
-    // Remove password from response
     const userResponse = {
       id: updatedUser.id,
       username: updatedUser.username,
@@ -326,7 +306,6 @@ router.put('/:id/role', authenticateToken, requireAdmin, [
   }
 });
 
-// Admin only: Delete user
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
@@ -338,7 +317,6 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       });
     }
 
-    // Prevent admin from deleting themselves
     if (user.id === req.user.id) {
       return res.status(400).json({
         success: false,

@@ -1,26 +1,23 @@
-// routes/progress.js - FIXED VERSION
+
 import express from 'express';
 import { Progress } from '../config/database.js';
 import { authenticateToken } from '../middleware/auth.js';
 
 
-const router = express.Router(); // ✅ This was missing!
+const router = express.Router(); 
 
 
 
 
-// GET /api/progress/current - Get user's current progress data
 router.get('/current', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     
-    // Get the most recent progress entry
     const currentProgress = await Progress.findOne({
       where: { userId },
       order: [['createdAt', 'DESC']]
     });
 
-    // If no progress exists, create initial entry with defaults
     if (!currentProgress) {
       const initialProgress = await Progress.create({
         userId,
@@ -58,7 +55,6 @@ router.get('/current', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/progress/weight - Log weight
 router.post('/weight', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -71,7 +67,6 @@ router.post('/weight', authenticateToken, async (req, res) => {
       });
     }
 
-    // Get or create progress entry
     let userProgress = await Progress.findOne({
       where: { userId }
     });
@@ -107,7 +102,6 @@ router.post('/weight', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/progress/goal - Set goal weight
 router.post('/goal', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -151,7 +145,6 @@ router.post('/goal', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/progress/measurements - Update body measurements
 router.post('/measurements', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -195,7 +188,6 @@ router.post('/measurements', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/progress/water - Log water intake
 router.post('/water', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -239,7 +231,6 @@ router.post('/water', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/progress/workout-note - Add workout note
 router.post('/workout-note', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -284,7 +275,6 @@ router.post('/workout-note', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/progress/history - Get progress history
 router.get('/history', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;

@@ -230,9 +230,9 @@ const Progress = sequelize.define('Progress', {
   }
 }, {
   tableName: 'progress',
-  timestamps: true,           // ✅ Timestamps enabled
-  createdAt: 'created_at',    // ✅ Map to snake_case
-  updatedAt: 'updated_at'     // ✅ Map to snake_case
+  timestamps: true,         
+  createdAt: 'created_at',    
+  updatedAt: 'updated_at'     
 });
 
 // Associations

@@ -1,9 +1,7 @@
-// server.js - Final ESM Version
 import express from 'express';
 import cors from 'cors';
 import { sequelize } from './config/database.js';
 
-// Import routes
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import exerciseRoutes from './routes/exercises.js';
@@ -11,24 +9,20 @@ import progressRoutes from './routes/progress.js';
 import adminUsersRoute from './routes/admin/AdminUsers.js';
 import adminExercisesRoute from './routes/admin/AdminExercises.js';
 
-// Middleware
 import { adminOnly } from './middleware/admin.js';
 import { authenticateToken } from './middleware/auth.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS
 app.use(cors({
   origin: ['http://localhost:5173'],
   credentials: true
 }));
 
-// Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -37,7 +31,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Test route
 app.get('/api/test', (req, res) => {
   res.json({
     success: true,
@@ -66,28 +59,19 @@ app.get('/api/test', (req, res) => {
   });
 });
 
-// ===========================
-// 🔹 Core API Routes
-// ===========================
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/progress', progressRoutes);
 
 
-// ===========================
-// 🔥 Admin Routes (Protected)
-// ===========================
-// app.use('/api/admin', adminOnly, adminUsersRoute);
-// app.use('/api/admin', adminOnly, adminExercisesRoute);
-// 🔐 Apply authenticateToken FIRST, then adminOnly
+
 app.use('/api/admin', authenticateToken, adminOnly, adminUsersRoute);
 app.use('/api/admin', authenticateToken, adminOnly, adminExercisesRoute);
 
-console.log('🔐 Admin routes protected with adminOnly middleware');
-// ===========================
-// 🔐 Global Error Handler
-// ===========================
+console.log(' Admin routes protected with adminOnly middleware');
+
 app.use((err, req, res, next) => {
   console.error('Server Error:', err);
   res.status(500).json({
@@ -97,9 +81,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ===========================
-// 🚫 404 Fallback
-// ===========================
+
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
@@ -134,34 +116,32 @@ app.use('*', (req, res) => {
   });
 });
 
-// ===========================
-// 🚀 Start Server
-// ===========================
+
 async function startServer() {
   try {
     console.log('🔌 Connecting to database...');
     await sequelize.authenticate();
-    console.log('✅ Database connected successfully');
+    console.log(' Database connected successfully');
 
-    // 🚨 Use { force: false } or { alter: true } in production
-    await sequelize.sync({ alter: true }); // Updates schema without losing data
-    console.log('✅ Database synced');
+    
+    await sequelize.sync({ alter: true }); 
+    console.log(' Database synced');
 
     app.listen(PORT, () => {
-      console.log('🚀 FitX Backend Server Started!');
+      console.log(' FitX Backend Server Started!');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(`📍 Server: http://localhost:${PORT}`);
-      console.log(`🔗 Health: http://localhost:${PORT}/api/health`);
-      console.log(`🧪 Test: http://localhost:${PORT}/api/test`);
-      console.log(`🔐 Admin Users: http://localhost:${PORT}/api/admin/users`);
-      console.log(`🏋️ Exercise Library: http://localhost:${PORT}/api/exercises`);
-      console.log(`📊 Progress Tracking: http://localhost:${PORT}/api/progress`);
-      console.log('🌍 Environment: development');
-      console.log('📊 Database: fitx_fitness (users + exercises + progress)');
+      console.log(` Server: http://localhost:${PORT}`);
+      console.log(` Health: http://localhost:${PORT}/api/health`);
+      console.log(` Test: http://localhost:${PORT}/api/test`);
+      console.log(` Admin Users: http://localhost:${PORT}/api/admin/users`);
+      console.log(` Exercise Library: http://localhost:${PORT}/api/exercises`);
+      console.log(` Progress Tracking: http://localhost:${PORT}/api/progress`);
+      console.log(' Environment: development');
+      console.log(' Database: fitx_fitness (users + exercises + progress)');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     });
   } catch (error) {
-    console.error('❌ Unable to start server:', error);
+    console.error(' Unable to start server:', error);
     process.exit(1);
   }
 }

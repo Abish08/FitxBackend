@@ -5,11 +5,8 @@ import { adminOnly } from '../../middleware/admin.js';
 
 const router = express.Router();
 
-/**
- * GET /api/admin/users
- * Get all users (admin only)
- * @access Admin
- */
+
+ 
 router.get('/users', adminOnly, async (req, res) => {
   try {
     console.log('📎 [AdminUsers] Fetching all users...');
@@ -46,7 +43,7 @@ router.get('/users', adminOnly, async (req, res) => {
       data: { users: userData }
     });
   } catch (error) {
-    console.error('🔴 Error fetching users:', error);
+    console.error(' Error fetching users:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching users',
@@ -55,11 +52,7 @@ router.get('/users', adminOnly, async (req, res) => {
   }
 });
 
-/**
- * PUT /api/admin/users/:id/role
- * Update user role (admin only)
- * @access Admin
- */
+
 router.put('/users/:id/role', adminOnly, async (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
@@ -89,7 +82,7 @@ router.put('/users/:id/role', adminOnly, async (req, res) => {
       data: { id: user.id, role: user.role }
     });
   } catch (error) {
-    console.error('🔴 Error updating user role:', error);
+    console.error(' Error updating user role:', error);
     res.status(500).json({
       success: false,
       message: 'Error updating user role',
@@ -98,11 +91,7 @@ router.put('/users/:id/role', adminOnly, async (req, res) => {
   }
 });
 
-/**
- * DELETE /api/admin/users/:id
- * Delete a user (admin only)
- * @access Admin
- */
+
 router.delete('/users/:id', adminOnly, async (req, res) => {
   const { id } = req.params;
 
@@ -129,7 +118,7 @@ router.delete('/users/:id', adminOnly, async (req, res) => {
       message: 'User deleted successfully'
     });
   } catch (error) {
-    console.error('🔴 Error deleting user:', error);
+    console.error(' Error deleting user:', error);
     res.status(500).json({
       success: false,
       message: 'Error deleting user',

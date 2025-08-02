@@ -110,9 +110,7 @@ router.post('/register', registerValidation, async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/login
-// @desc    Login user
-// @access  Public
+
 router.post('/login', loginValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -174,9 +172,7 @@ router.post('/login', loginValidation, async (req, res) => {
   }
 });
 
-// @route   GET /api/auth/me
-// @desc    Get current user profile
-// @access  Private
+
 router.get('/me', authenticateToken, (req, res) => {
   res.json({
     success: true,
