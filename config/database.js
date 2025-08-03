@@ -1,4 +1,4 @@
-// config/database.js
+
 import { Sequelize, DataTypes } from 'sequelize';
 import dotenv from 'dotenv';
 
@@ -21,7 +21,7 @@ const sequelize = new Sequelize(
   }
 );
 
-// User Model
+
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,

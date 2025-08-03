@@ -1,4 +1,4 @@
-// routes/auth.js
+
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -9,7 +9,7 @@ import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Generate JWT Token
+
 const generateToken = (user) => {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
@@ -18,7 +18,7 @@ const generateToken = (user) => {
   );
 };
 
-// Validation middleware
+
 const registerValidation = [
   body('username').isLength({ min: 3 }).withMessage('Username must be at least 3 characters'),
   body('email').isEmail().withMessage('Please provide a valid email'),
@@ -32,9 +32,7 @@ const loginValidation = [
   body('password').notEmpty().withMessage('Password is required')
 ];
 
-// @route   POST /api/auth/register
-// @desc    Register a new user
-// @access  Public
+
 router.post('/register', registerValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
